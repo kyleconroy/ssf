@@ -1,5 +1,8 @@
-This is the definition of a modern metrics format with the following attributes:
-* Standard [statsd](https://github.com/etsy/statsd) fields like name and sample rate
+# Sensor Sample Format
+
+This is the definition of the Sensor Sample Format, a modern metrics format
+with the following goals:
+* Familiarity due to similarities to standard [statsd](https://github.com/etsy/statsd) fields like name and sample rate
 * JSON formatted for ease of generation and consumption
 * Inclusion of units for improved ergonomics after storage
 * Orthogonal tagging for many dimensions
@@ -30,10 +33,12 @@ This is the definition of a modern metrics format with the following attributes:
 
 [StatsD](https://github.com/etsy/statsd) is great. Please use it!
 
-But if, like me, you are eager for a protocol that has more features, this might be for you.
-
 It's also, however, a bit of a fractured standard. Many implementations have extended it.
 Here we attempt to capture many of the extensions as well as include a few novel, new ideas.
+
+
+If, like me, you are eager for a protocol that has more features, this might be for you.
+
 
 ## Why JSON?
 
@@ -79,6 +84,11 @@ TODO: Include timer separate from histogram?
 
 ## Name (required)
 Required: A string name for the metric, event or whatever in storage.
+
+Names are likely to be in the form of a dotted schema, such as those
+popularized by Graphite and other tools. The inclusion of tags,
+however, means that the names are considerably simpler as other information
+like hostnames, device names and paths will be part of the tags.
 
 ## Value (required for mist types)
 
