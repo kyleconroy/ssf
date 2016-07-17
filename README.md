@@ -2,6 +2,7 @@
 
 This is the definition of the Sensor Sample Format, a modern metrics format
 with the following goals:
+
 * Familiarity due to similarities to standard [statsd](https://github.com/etsy/statsd) fields like name and sample rate
 * JSON formatted for ease of generation and consumption
 * Inclusion of units for improved ergonomics after storage
@@ -9,6 +10,9 @@ with the following goals:
 * An "event" type for aperiodic, human-readable stuff
 * Optional trace fields for use with tracing sytems
 * Status code for signaling health
+
+It is so named because it's intent is to represent the samples from sensors
+we use to make our systems [observable](https://en.wikipedia.org/wiki/Observability).
 
 ## Example
 
