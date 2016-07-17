@@ -1,3 +1,13 @@
+This is the definition of a modern metrics format with the following attributes:
+* Standard [statsd](https://github.com/etsy/statsd) fields like name and sample rate
+* JSON formatted for ease of generation and consumption
+* Inclusion of units for improved ergonomics after storage
+* Orthogonal tagging for many dimensions
+* An "event" type for aperiodic, human-readable stuff
+* Optional trace fields for use with tracing sytems
+* Status code for signaling health
+
+## Example
 
 ```json
 {
@@ -15,6 +25,46 @@
   "trace_id": 123457
 }
 ```
+
+# Why?
+
+[StatsD](https://github.com/etsy/statsd) is great. Please use it!
+
+But if, like me, you are eager for a protocol that has more features, this might be for you.
+
+It's also, however, a bit of a fractured standard. Many implementations have extended it.
+Here we attempt to capture many of the extensions as well as include a few novel, new ideas.
+
+## Why JSON?
+
+Because it's easy. StatsD's simplicity is large factor in it's success. To aid in correctness
+and easy of parsing, JSON seems a reasonable standard!
+
+Compare the simplest of StatsD messages:
+
+```
+page.views:1|c
+```
+
+with:
+```
+{"metric:counter","name":"page.views","value":1,"unit":"page"}
+```
+
+The JSON format is still very approachable typed out by hand or emitted using string-interpolation
+in every programming language I can think of. It is also more verbose, which is good and bad. Bad
+because it's more to type and more data on the wire, but good because it's more obvious to future
+readers, provides a unit and allows for more features!
+
+## Why not $OTHER_FORMAT
+
+I have regularly used tricks like [nc](https://en.wikipedia.org/wiki/Netcat) and raw UDP sockets
+as a way to emit simple StatsD datagrams and requiring a binary format was a non-starter for me,
+it would make such methods harder. We want instrumentation to be as easy as possible!
+
+# Fields
+
+Here are the fields in the document:
 
 ## Metric (required)
 
