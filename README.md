@@ -57,7 +57,7 @@ page.views:1|c
 
 with:
 ```
-{"metric:counter","name":"page.views","value":1,"unit":"page"}
+{"metric":"counter","name":"page.views","value":1,"unit":"page"}
 ```
 
 The JSON format is still very approachable typed out by hand or emitted using string-interpolation
