@@ -209,3 +209,14 @@ this sample the child of another sample.
   "unit": "exception"
 }
 ```
+
+# Other Suggestions
+
+## Use verbose names
+
+When naming a metric, think of it as an English sentence: "This metric measures…".
+
+For example, if measuring pages, one might end up with "This metrric measures pages viewed" resulting in a
+metric name of `pages.viewed`. It may seem a bit burdensome to write such long metric names, but
+remember that these metrics are meant to be consumed in monitoring and analytic systems and therefore are
+read and interpreted more of than they are typed in to your codebase.
