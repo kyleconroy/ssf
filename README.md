@@ -72,6 +72,7 @@ message Sample {
 * Add way for "extensions" to be added ^
 * Creation of a CLI tool for emitting a metric to a port a la `nc`
 * Define valid tag characters. (colons as delimiter?)
+* Decide if there's any real difference in a histogram and a timer
 
 # Why?
 
@@ -82,21 +83,18 @@ Here we attempt to capture many of the extensions as well as include a few novel
 
 If, like me, you are eager for a protocol that has more features, this might be for you.
 
-
 # Fields
 
 Here are the fields in the document:
 
 ## Metric (required)
 
-The key `metric` must be one of the strings:
-* `c` for counter
-* `e` for event
-* `g` for gauge
-* `h` for histogram
-* `s` for set
-
-TODO: Include timer separate from histogram?
+The key `metric` must be one of the integer values:
+* `0` for counter
+* `1` for gauge
+* `2` for histogram
+* `3` for set
+* `4` for event
 
 ## Name (required)
 Required: A string name for the metric, event or whatever in storage.
