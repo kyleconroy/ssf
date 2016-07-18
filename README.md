@@ -1,12 +1,11 @@
-# Simple Sensor Format
+# Standard Sensor Format
 
-This is the definition of the Sensor Sample Format, a modern metrics format
+This is the definition of the Standard Sensor Format, a modern metrics format
 with the following goals:
 
-* JSON formatted for ease of generation and consumption
 * Familiarity due to similarities to [StatsD](https://github.com/etsy/statsd) fields like name and sample rate
 * Orthogonal tagging for many dimensions
-* Inclusion of units for improved ergonomics after storage
+* Inclusion of unit for improved ergonomics after storage
 * An "event" type for aperiodic, human-readable stuff
 * Optional trace fields for use with tracing sytems
 * Status code for signaling health
@@ -28,8 +27,10 @@ we use to make our systems [observable](https://en.wikipedia.org/wiki/Observabil
   "status": 0,
   "message": "Some sort of string message here!",
   "unit": "page",
-  "parent_trace_id": 123456,
-  "trace_id": 123457
+  "trace": {
+    "parent_trace_id": 123456,
+    "trace_id": 123457
+  }
 }
 ```
 
@@ -42,33 +43,6 @@ Here we attempt to capture many of the extensions as well as include a few novel
 
 If, like me, you are eager for a protocol that has more features, this might be for you.
 
-
-## Why JSON?
-
-Because it's easy. StatsD's simplicity is large factor in it's success. To aid in correctness
-and easy of parsing, JSON seems a reasonable standard!
-
-Compare the simplest of StatsD messages:
-
-```
-page.views:1|c
-```
-
-with:
-```
-{"metric":"counter","name":"page.views","value":1,"unit":"page"}
-```
-
-The JSON format is still very approachable typed out by hand or emitted using string-interpolation
-in every programming language I can think of. It is also more verbose, which is good and bad. Bad
-because it's more to type and more data on the wire, but good because it's more obvious to future
-readers, provides a unit and allows for more features!
-
-## Why not $OTHER_FORMAT
-
-I have regularly used tricks like [nc](https://en.wikipedia.org/wiki/Netcat) and raw UDP sockets
-as a way to emit simple StatsD datagrams and requiring a binary format was a non-starter for me,
-it would make such methods harder. We want instrumentation to be as easy as possible!
 
 # Fields
 
@@ -114,10 +88,15 @@ The `message` field is a string of arbitrary length meant to provide context or 
 information around a metric or an event. It is also used as the input for a set metric to avoid
 the complication of a type union for `value`.
 
+A common use of this field is as a replacement for a log line.
+
 ## Tags
 
-Tags are name-value pairs providing independent dimensions for further differentiating a metric. Such "orthogonal"
+Tags are arbitrary name-value pairs providing independent dimensions for further differentiating a metric. Such "orthogonal"
 tags are widely used and explained in other systems, so that explanation will be skipped here.
+
+SSF does not take a stance on tags meaning anything. They are just arbitrary data. Fields that have specific meaning
+to SSF are represented as properties in this spec, rather than in tags.
 
 The field `tags`, if present, must contain an object with an arbitrary number of fields. Each field and it's value
 must be a string.
@@ -132,7 +111,8 @@ The key `status` must be one of the integers:
 
 If no `status` is supplied then server implementations must assume `0`.
 
-The interpretation of these statuses is the responsibility of the user.
+The interpretation of these statuses is the responsibility of the user, meaning
+that what you mean by `WARNING` is likely specific to your contexst.
 
 ## Unit (required for all but set and event)
 
