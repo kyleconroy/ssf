@@ -21,9 +21,9 @@ we use to make our systems [observable](https://en.wikipedia.org/wiki/Observabil
   "name": "page.views",
   "value": 1,
   "sample_rate": 0.5,
-  "tags": {
-    "foo": "bar"
-  },
+  "tags": [
+    "foo:bar"
+  ],
   "status": 0,
   "message": "Some sort of string message here!",
   "unit": "page",
@@ -31,6 +31,34 @@ we use to make our systems [observable](https://en.wikipedia.org/wiki/Observabil
     "parent_id": 123457,
     "id": 123456
   }
+}
+```
+
+As Protobuf:
+```protobuf
+syntax = "proto3";
+
+message Trace {
+  required double id = 1;
+  optional double parent_id = 2;
+}
+
+message Sample {
+  enum Metrics {
+      COUNTER = 0;
+      GAUGE = 1;
+      HISTOGRAM = 2;
+      SET = 3;
+      EVENT = 4;
+  }
+  optional Metrics metric = 1 [default = COUNTER];
+  required string name = 2;
+  optional int32 status = 3 [default = 0];
+  optional double value = 4;
+  optional float sample_rate = 5 [default = 1.0];
+  repeated string tags = 6;
+  optional string unit = 7;
+  optional Trace trace = 8;
 }
 ```
 
