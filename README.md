@@ -42,6 +42,7 @@ we use to make our systems [observable](https://en.wikipedia.org/wiki/Observabil
 * Work out the whole MTU/UDP/log-lines-are-long thing
 * Settle if these should be separate objects or one big one?
 * Add way for "extensions" to be added ^
+* Creation of a CLI tool for emitting a metric to a port a la `nc`
 
 # Why?
 
