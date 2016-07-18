@@ -67,7 +67,7 @@ popularized by Graphite and other tools. The inclusion of tags,
 however, means that the names are considerably simpler as other information
 like hostnames, device names and paths will be part of the tags.
 
-## Value (required for mist types)
+## Value (required for most types)
 
 The value for the measurement. It is required for:
 
@@ -78,7 +78,7 @@ The value for the measurement. It is required for:
 ## Sample Rate (optional)
 
 A floating point representation of the probability that this metric is being sampled at. If, for example
-the metric is being emitted only 50% of the time then the value for `sampe_rate` shall be `0.5`.
+the metric is being emitted only 50% of the time then the value for `sample_rate` shall be `0.5`.
 
 If no `sample_rate` is supplied then server implementations must assume `1.0`.
 
@@ -214,7 +214,7 @@ this sample the child of another sample.
 
 When naming a metric, think of it as an English sentence: "This metric measures…".
 
-For example, if measuring pages, one might end up with "This metrric measures pages viewed" resulting in a
+For example, if measuring pages, one might end up with "This metric measures pages viewed" resulting in a
 metric name of `pages.viewed`. It may seem a bit burdensome to write such long metric names, but
 remember that these metrics are meant to be consumed in monitoring and analytic systems and therefore are
 read and interpreted more of than they are typed in to your codebase.
