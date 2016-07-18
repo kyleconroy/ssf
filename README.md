@@ -1,4 +1,4 @@
-# Sensor Sample Format
+# Simple Sensor Format
 
 This is the definition of the Sensor Sample Format, a modern metrics format
 with the following goals:
