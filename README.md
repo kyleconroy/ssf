@@ -71,6 +71,7 @@ message Sample {
 * Settle if these should be separate objects or one big one?
 * Add way for "extensions" to be added ^
 * Creation of a CLI tool for emitting a metric to a port a la `nc`
+* Define valid tag characters. (colons as delimiter?)
 
 # Why?
 
@@ -130,14 +131,13 @@ A common use of this field is as a replacement for a log line.
 
 ## Tags
 
-Tags are arbitrary name-value pairs providing independent dimensions for further differentiating a metric. Such "orthogonal"
+Tags are arbitrary strings providing independent dimensions for further differentiating a metric. Such "orthogonal"
 tags are widely used and explained in other systems, so that explanation will be skipped here.
 
 SSF does not take a stance on tags meaning anything. They are just arbitrary data. Fields that have specific meaning
 to SSF are represented as properties in this spec, rather than in tags.
 
-The field `tags`, if present, must contain an object with an arbitrary number of fields. Each field and it's value
-must be a string.
+The field `tags`, if present, must contain an array with an arbitrary number of strings.
 
 ## Status (optional)
 
