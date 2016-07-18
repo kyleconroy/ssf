@@ -34,6 +34,15 @@ we use to make our systems [observable](https://en.wikipedia.org/wiki/Observabil
 }
 ```
 
+# TODO
+* Versioning?
+* Write up goals (combining metrics, logging, events, tracing and service checks)
+* Settle on a serialization format. Leaning toward MessagePack of Protobuf.
+* Way of representing intermediary tag munging? (aggregators gonna agg)
+* Work out the whole MTU/UDP/log-lines-are-long thing
+* Settle if these should be separate objects or one big one?
+* Add way for "extensions" to be added ^
+
 # Why?
 
 [StatsD](https://github.com/etsy/statsd) is great. Please use it!
