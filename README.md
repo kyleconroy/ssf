@@ -3,10 +3,10 @@
 This is the definition of the Sensor Sample Format, a modern metrics format
 with the following goals:
 
-* Familiarity due to similarities to standard [statsd](https://github.com/etsy/statsd) fields like name and sample rate
 * JSON formatted for ease of generation and consumption
-* Inclusion of units for improved ergonomics after storage
+* Familiarity due to similarities to [StatsD](https://github.com/etsy/statsd) fields like name and sample rate
 * Orthogonal tagging for many dimensions
+* Inclusion of units for improved ergonomics after storage
 * An "event" type for aperiodic, human-readable stuff
 * Optional trace fields for use with tracing sytems
 * Status code for signaling health
@@ -37,9 +37,8 @@ we use to make our systems [observable](https://en.wikipedia.org/wiki/Observabil
 
 [StatsD](https://github.com/etsy/statsd) is great. Please use it!
 
-It's also, however, a bit of a fractured standard. Many implementations have extended it.
+StatsD is also a fractured standard. Many implementations have extended it.
 Here we attempt to capture many of the extensions as well as include a few novel, new ideas.
-
 
 If, like me, you are eager for a protocol that has more features, this might be for you.
 
