@@ -28,8 +28,8 @@ we use to make our systems [observable](https://en.wikipedia.org/wiki/Observabil
   "message": "Some sort of string message here!",
   "unit": "page",
   "trace": {
-    "parent_trace_id": 123456,
-    "trace_id": 123457
+    "parent_id": 123457,
+    "id": 123456
   }
 }
 ```
@@ -121,14 +121,19 @@ of the user, but they are expected to be one of:
 * A unit such as a `byte` or `meter` with or without a prefix
 * An arbitrary string such as `pages` that is used for an informational label
 
-# Trace ID (optional)
+# Tracing (optional)
 
-The field `trace_id` may be present and contain an integer as part of a tracing system to uniquely
+Tracing information is optionally stored in the `trace` key. It contains an
+object with required `id` and an optional `parent_id`.
+
+## Trace ID
+
+The field `id` may be present and contain an integer as part of a tracing system to uniquely
 identify the sample as part of a trace.
 
-# Parent Trace ID (optional)
+## Parent Trace ID (optional)
 
-The field `parent_trace_id` may be present and contain an integer as part of a tracing system to make
+The field `parent_id` may be present and contain an integer as part of a tracing system to make
 this sample the child of another sample.
 
 # Examples
