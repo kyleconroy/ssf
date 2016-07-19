@@ -36,7 +36,7 @@ we use to make our systems [observable](https://en.wikipedia.org/wiki/Observabil
 
 As Protobuf:
 ```protobuf
-syntax = "proto3";
+syntax = "proto2";
 
 message Trace {
   required double id = 1;
