@@ -78,7 +78,6 @@ message Sample {
 * Add way for "extensions" to be added ^
 * Creation of a CLI tool for emitting a metric to a port a la `nc`
 * Define valid tag characters. (colons as delimiter?)
-* Decide if there's any real difference in a histogram and a timer
 
 # Why?
 
@@ -101,6 +100,9 @@ The key `metric` must be one of the integer values:
 * `2` for histogram
 * `3` for set
 * `4` for event
+
+Note there is no "timer" type, because SSF treats timers as histograms. The downstream
+storage can decide how to interpret them based on the unit.
 
 ## Name (required)
 Required: A string name for the metric, event or whatever in storage.
