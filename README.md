@@ -51,9 +51,15 @@ message Sample {
       SET = 3;
       EVENT = 4;
   }
+  enum Status {
+      OK = 0;
+      WARNING = 1;
+      CRITICAL = 2;
+      UNKNOWN = 3;
+  }
   optional Metrics metric = 1 [default = COUNTER];
   required string name = 2;
-  optional int32 status = 3 [default = 0];
+  optional Status status = 3 [default = OK];
   optional double value = 4;
   optional float sample_rate = 5 [default = 1.0];
   repeated string tags = 6;
