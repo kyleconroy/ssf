@@ -38,6 +38,11 @@ As Protobuf:
 ```protobuf
 syntax = "proto2";
 
+message Tag {
+  required string name = 1;
+  optional string value = 2;
+}
+
 message Trace {
   required double id = 1;
   optional double parent_id = 2;
@@ -62,7 +67,7 @@ message Sample {
   optional Status status = 3 [default = OK];
   optional double value = 4;
   optional float sample_rate = 5 [default = 1.0];
-  repeated string tags = 6;
+  repeated Tag tags = 6;
   optional string unit = 7;
   optional Trace trace = 8;
 }
