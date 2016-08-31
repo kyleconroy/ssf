@@ -38,18 +38,20 @@ As Protobuf:
 ```protobuf
 syntax = "proto2";
 
-message Tag {
+package main;
+
+message SSFTag {
   required string name = 1;
   optional string value = 2;
 }
 
-message Trace {
-  required double id = 1;
-  optional double parent_id = 2;
+message SSFTrace {
+  required int64 id = 1;
+  optional int64 parent_id = 2;
 }
 
-message Sample {
-  enum Metrics {
+message SSFSample {
+  enum Metric {
       COUNTER = 0;
       GAUGE = 1;
       HISTOGRAM = 2;
@@ -62,14 +64,14 @@ message Sample {
       CRITICAL = 2;
       UNKNOWN = 3;
   }
-  optional Metrics metric = 1 [default = COUNTER];
+  optional Metric metric = 1 [default = COUNTER];
   required string name = 2;
   optional Status status = 3 [default = OK];
   optional double value = 4;
   optional float sample_rate = 5 [default = 1.0];
-  repeated Tag tags = 6;
+  repeated SSFTag tags = 6;
   optional string unit = 7;
-  optional Trace trace = 8;
+  optional SSFTrace trace = 8;
 }
 ```
 
@@ -177,12 +179,12 @@ object with required `id` and an optional `parent_id`.
 
 ## Trace ID
 
-The field `id` may be present and contain an integer as part of a tracing system to uniquely
+The field `id` may be present and contain an `int64` as part of a tracing system to uniquely
 identify the sample as part of a trace.
 
 ## Parent Trace ID (optional)
 
-The field `parent_id` may be present and contain an integer as part of a tracing system to make
+The field `parent_id` may be present and contain an `int64` as part of a tracing system to make
 this sample the child of another sample.
 
 # Examples
