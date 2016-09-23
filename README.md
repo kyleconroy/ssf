@@ -46,8 +46,9 @@ message SSFTag {
 }
 
 message SSFTrace {
-  required int64 id = 1;
-  optional int64 parent_id = 2;
+  required int64 trace_id = 1;
+  required int64 id = 2;
+  optional int64 parent_id = 3;
 }
 
 message SSFSample {
@@ -78,13 +79,10 @@ message SSFSample {
 # TODO
 * Versioning?
 * Write up goals (combining metrics, logging, events, tracing and service checks)
-* Settle on a serialization format. Leaning toward MessagePack of Protobuf.
 * Way of representing intermediary tag munging? (aggregators gonna agg)
 * Work out the whole MTU/UDP/log-lines-are-long thing
-* Settle if these should be separate objects or one big one?
 * Add way for "extensions" to be added ^
 * Creation of a CLI tool for emitting a metric to a port a la `nc`
-* Define valid tag characters. (colons as delimiter?)
 
 # Why?
 
@@ -95,9 +93,9 @@ Here we attempt to capture many of the extensions as well as include a few novel
 
 If, like me, you are eager for a protocol that has more features, this might be for you.
 
-# Fields
+# Attributes
 
-Here are the fields in the document:
+Here are the attributes in an SSF sample:
 
 ## Metric (required)
 
@@ -151,6 +149,9 @@ be skipped here.
 SSF does not take a stance on tags meaning anything. They are just arbitrary data. Fields that have specific meaning
 to SSF are represented as properties in this spec, rather than in tags.
 
+SSF also allows keys to be either a key or a key and value pair. If your backend does not support key value pairs,
+feel free to ignore.
+
 ## Status (optional)
 
 The key `status` must be one of the integers:
@@ -162,7 +163,7 @@ The key `status` must be one of the integers:
 If no `status` is supplied then server implementations must assume `0`.
 
 The interpretation of these statuses is the responsibility of the user, meaning
-that what you mean by `WARNING` is likely specific to your contexst.
+that what you mean by `WARNING` is likely specific to your context.
 
 ## Unit (required for all but set and event)
 
@@ -173,10 +174,13 @@ of the user, but they are expected to be one of:
 
 # Tracing (optional)
 
-Tracing information is optionally stored in the `trace` key. It contains an
-object with required `id` and an optional `parent_id`.
+Tracing information is optionally stored in the `trace` key.
 
 ## Trace ID
+
+The field `trace_id` represents the id of the overall trace that this span is a part of.
+
+## Span Id
 
 The field `id` may be present and contain an `int64` as part of a tracing system to uniquely
 identify the sample as part of a trace.
