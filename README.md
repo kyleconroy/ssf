@@ -3,7 +3,7 @@
 This is the definition of the Standard Sensor Format, a modern metrics format
 with the following goals:
 
-* Familiarity due to similarities to [StatsD](https://github.com/etsy/statsd) fields like name and sample rate
+* Familiarity due to similarity to [StatsD](https://github.com/etsy/statsd) fields like name and sample rate
 * Orthogonal tagging for many dimensions
 * Inclusion of unit for improved ergonomics after storage
 * An "event" type for aperiodic, human-readable stuff
@@ -28,7 +28,8 @@ message SSFTag {
 message SSFTrace {
   required int64 trace_id = 1;
   required int64 id = 2;
-  optional int64 parent_id = 3;
+  required int64 duration = 3;
+  optional int64 parent_id = 4;
 }
 
 message SSFSample {
@@ -37,7 +38,9 @@ message SSFSample {
       GAUGE = 1;
       HISTOGRAM = 2;
       SET = 3;
-      EVENT = 4;
+      STATUS = 4;
+      EVENT = 5;
+      TRACE = 6;
   }
   enum Status {
       OK = 0;
@@ -47,22 +50,28 @@ message SSFSample {
   }
   optional Metric metric = 1 [default = COUNTER];
   required string name = 2;
-  optional Status status = 3 [default = OK];
-  optional double value = 4;
-  optional float sample_rate = 5 [default = 1.0];
-  repeated SSFTag tags = 6;
-  optional string unit = 7;
-  optional SSFTrace trace = 8;
+  required int64 timestamp = 2;
+  optional string message = 3;
+  optional Status status = 4 [default = OK];
+  optional double value = 5;
+  optional float sample_rate = 6 [default = 1.0];
+  repeated SSFTag tags = 7;
+  optional string unit = 8;
+  optional SSFTrace trace = 9;
 }
 ```
 
 # TODO
 * Versioning?
-* Write up goals (combining metrics, logging, events, tracing and service checks)
+* Write up goals (combining metrics, tracing and service checks)
 * Way of representing intermediary tag munging? (aggregators gonna agg)
 * Work out the whole MTU/UDP/log-lines-are-long thing
-* Add way for "extensions" to be added ^
+* Duration in trace needs a unit (ns?)
+* Add mechanism for "extensions"
 * Creation of a CLI tool for emitting a metric to a port a la `nc`
+* Influx fields
+* OpenTracing baggage
+* Should `status` be log levelesque instead of status checky?
 
 # Why?
 
@@ -71,7 +80,15 @@ message SSFSample {
 StatsD is also a fractured standard. Many implementations have extended it.
 Here we attempt to capture many of the extensions as well as include a few novel, new ideas.
 
-If, like me, you are eager for a protocol that has more features, this might be for you.
+If, like us, you are eager for a protocol that has more features, this might be for you.
+
+# Examples
+
+SSF can represent the following:
+
+* A metric sample a la StatsD by using `name`, `timestamp`, `value` and optional `sample_rate`, `tags` and `unit`.
+* A trace span using `name`, `timestamp`, `trace_id`, `id`, `duration` and optional `parent_id`, `status` and `tags`.
+* A status check via `name`, `timestamp` and `status` with optional `value` and `tags`.
 
 # Attributes
 
@@ -84,7 +101,9 @@ The key `metric` must be one of the integer values:
 * `1` for gauge
 * `2` for histogram
 * `3` for set
-* `4` for event
+* `4` for status check
+* `5` for an event
+* `6` for a trace
 
 Note there is no "timer" type, because SSF treats timers as histograms. The downstream
 storage can decide how to interpret them based on the unit.
@@ -111,6 +130,9 @@ A floating point representation of the probability that this metric is being sam
 the metric is being emitted only 50% of the time then the value for `sample_rate` shall be `0.5`.
 
 If no `sample_rate` is supplied then server implementations must assume `1.0`.
+
+The sample rate may be used more than traditional metrics. Tracing systems may use this as a form of weighting
+to determine if trace should be recorded.
 
 ## Message (required for set, optional otherwise)
 

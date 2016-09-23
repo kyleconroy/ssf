@@ -10,7 +10,8 @@ message SSFTag {
 message SSFTrace {
   required int64 trace_id = 1;
   required int64 id = 2;
-  optional int64 parent_id = 3;
+  required int64 duration = 3;
+  optional int64 parent_id = 4;
 }
 
 message SSFSample {
@@ -19,7 +20,9 @@ message SSFSample {
       GAUGE = 1;
       HISTOGRAM = 2;
       SET = 3;
-      EVENT = 4;
+      STATUS = 4;
+      EVENT = 5;
+      TRACE = 6;
   }
   enum Status {
       OK = 0;
@@ -29,10 +32,12 @@ message SSFSample {
   }
   optional Metric metric = 1 [default = COUNTER];
   required string name = 2;
-  optional Status status = 3 [default = OK];
-  optional double value = 4;
-  optional float sample_rate = 5 [default = 1.0];
-  repeated SSFTag tags = 6;
-  optional string unit = 7;
-  optional SSFTrace trace = 8;
+  required int64 timestamp = 3;
+  optional string message = 4;
+  optional Status status = 5 [default = OK];
+  optional double value = 6;
+  optional float sample_rate = 7 [default = 1.0];
+  repeated SSFTag tags = 8;
+  optional string unit = 9;
+  optional SSFTrace trace = 10;
 }
