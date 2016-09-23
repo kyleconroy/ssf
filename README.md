@@ -15,26 +15,6 @@ we use to make our systems [observable](https://en.wikipedia.org/wiki/Observabil
 
 ## Example
 
-```json
-{
-  "metric": "c",
-  "name": "page.views",
-  "value": 1,
-  "sample_rate": 0.5,
-  "tags": [
-    "foo:bar"
-  ],
-  "status": 0,
-  "message": "Some sort of string message here!",
-  "unit": "page",
-  "trace": {
-    "parent_id": 123457,
-    "id": 123456
-  }
-}
-```
-
-As Protobuf:
 ```protobuf
 syntax = "proto2";
 
