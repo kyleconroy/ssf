@@ -21,9 +21,9 @@ we use to make our systems [observable](https://en.wikipedia.org/wiki/Observabil
   "name": "page.views",
   "value": 1,
   "sample_rate": 0.5,
-  "tags": {
-    "foo": "bar"
-  },
+  "tags": [
+    "foo:bar"
+  ],
   "status": 0,
   "message": "Some sort of string message here!",
   "unit": "page",
@@ -34,13 +34,53 @@ we use to make our systems [observable](https://en.wikipedia.org/wiki/Observabil
 }
 ```
 
+As Protobuf:
+```protobuf
+syntax = "proto2";
+
+package main;
+
+message SSFTag {
+  required string name = 1;
+  optional string value = 2;
+}
+
+message SSFTrace {
+  required int64 trace_id = 1;
+  required int64 id = 2;
+  optional int64 parent_id = 3;
+}
+
+message SSFSample {
+  enum Metric {
+      COUNTER = 0;
+      GAUGE = 1;
+      HISTOGRAM = 2;
+      SET = 3;
+      EVENT = 4;
+  }
+  enum Status {
+      OK = 0;
+      WARNING = 1;
+      CRITICAL = 2;
+      UNKNOWN = 3;
+  }
+  optional Metric metric = 1 [default = COUNTER];
+  required string name = 2;
+  optional Status status = 3 [default = OK];
+  optional double value = 4;
+  optional float sample_rate = 5 [default = 1.0];
+  repeated SSFTag tags = 6;
+  optional string unit = 7;
+  optional SSFTrace trace = 8;
+}
+```
+
 # TODO
 * Versioning?
 * Write up goals (combining metrics, logging, events, tracing and service checks)
-* Settle on a serialization format. Leaning toward MessagePack of Protobuf.
 * Way of representing intermediary tag munging? (aggregators gonna agg)
 * Work out the whole MTU/UDP/log-lines-are-long thing
-* Settle if these should be separate objects or one big one?
 * Add way for "extensions" to be added ^
 * Creation of a CLI tool for emitting a metric to a port a la `nc`
 
@@ -53,21 +93,21 @@ Here we attempt to capture many of the extensions as well as include a few novel
 
 If, like me, you are eager for a protocol that has more features, this might be for you.
 
+# Attributes
 
-# Fields
-
-Here are the fields in the document:
+Here are the attributes in an SSF sample:
 
 ## Metric (required)
 
-The key `metric` must be one of the strings:
-* `c` for counter
-* `e` for event
-* `g` for gauge
-* `h` for histogram
-* `s` for set
+The key `metric` must be one of the integer values:
+* `0` for counter
+* `1` for gauge
+* `2` for histogram
+* `3` for set
+* `4` for event
 
-TODO: Include timer separate from histogram?
+Note there is no "timer" type, because SSF treats timers as histograms. The downstream
+storage can decide how to interpret them based on the unit.
 
 ## Name (required)
 Required: A string name for the metric, event or whatever in storage.
@@ -102,14 +142,15 @@ A common use of this field is as a replacement for a log line.
 
 ## Tags
 
-Tags are arbitrary name-value pairs providing independent dimensions for further differentiating a metric. Such "orthogonal"
-tags are widely used and explained in other systems, so that explanation will be skipped here.
+Tags are an arbitrary number of string pairs providing independent dimensions for further differentiating
+a metric. Such "orthogonal" tags are widely used and explained in other systems, so that explanation will
+be skipped here.
 
 SSF does not take a stance on tags meaning anything. They are just arbitrary data. Fields that have specific meaning
 to SSF are represented as properties in this spec, rather than in tags.
 
-The field `tags`, if present, must contain an object with an arbitrary number of fields. Each field and it's value
-must be a string.
+SSF also allows keys to be either a key or a key and value pair. If your backend does not support key value pairs,
+feel free to ignore.
 
 ## Status (optional)
 
@@ -122,7 +163,7 @@ The key `status` must be one of the integers:
 If no `status` is supplied then server implementations must assume `0`.
 
 The interpretation of these statuses is the responsibility of the user, meaning
-that what you mean by `WARNING` is likely specific to your contexst.
+that what you mean by `WARNING` is likely specific to your context.
 
 ## Unit (required for all but set and event)
 
@@ -133,17 +174,20 @@ of the user, but they are expected to be one of:
 
 # Tracing (optional)
 
-Tracing information is optionally stored in the `trace` key. It contains an
-object with required `id` and an optional `parent_id`.
+Tracing information is optionally stored in the `trace` key.
 
 ## Trace ID
 
-The field `id` may be present and contain an integer as part of a tracing system to uniquely
+The field `trace_id` represents the id of the overall trace that this span is a part of.
+
+## Span Id
+
+The field `id` may be present and contain an `int64` as part of a tracing system to uniquely
 identify the sample as part of a trace.
 
 ## Parent Trace ID (optional)
 
-The field `parent_id` may be present and contain an integer as part of a tracing system to make
+The field `parent_id` may be present and contain an `int64` as part of a tracing system to make
 this sample the child of another sample.
 
 # Examples
