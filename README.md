@@ -7,7 +7,7 @@ with the following goals:
 * Orthogonal tagging for many dimensions
 * Inclusion of unit for improved ergonomics after storage
 * An "event" type for aperiodic, human-readable stuff
-* Optional trace fields for use with tracing sytems
+* Optional trace fields for use with tracing systems
 * Status code for signaling health
 
 It is so named because it's intent is to represent the samples from sensors
@@ -88,7 +88,8 @@ SSF can represent the following:
 
 * A metric sample a la StatsD by using `name`, `timestamp`, `value` and optional `sample_rate`, `tags` and `unit`.
 * A trace span using `name`, `timestamp`, `trace_id`, `id`, `duration` and optional `parent_id`, `status` and `tags`.
-* A status check via `name`, `timestamp` and `status` with optional `value` and `tags`.
+* A status check via `name`, `timestamp` and `status` with optional `message`, `value` and `tags`.
+* A log line with a `name`, `timestamp` and `message` with an optional… everything else!
 
 # Attributes
 
@@ -107,6 +108,10 @@ The key `metric` must be one of the integer values:
 
 Note there is no "timer" type, because SSF treats timers as histograms. The downstream
 storage can decide how to interpret them based on the unit.
+
+## Timesamp (required)
+
+When did this occur?
 
 ## Name (required)
 Required: A string name for the metric, event or whatever in storage.
@@ -191,6 +196,10 @@ identify the sample as part of a trace.
 
 The field `parent_id` may be present and contain an `int64` as part of a tracing system to make
 this sample the child of another sample.
+
+## Duration
+
+How long did this span take to complete?
 
 # Examples
 
