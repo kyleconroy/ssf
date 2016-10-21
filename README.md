@@ -16,23 +16,23 @@ we use to make our systems [observable](https://en.wikipedia.org/wiki/Observabil
 ## Example
 
 ```protobuf
-syntax = "proto2";
+syntax = "proto3";
 
-package main;
+package ssf;
 
-message SSFTag {
-  required string name = 1;
-  optional string value = 2;
+message Tag {
+  string name = 1;
+  string value = 2;
 }
 
-message SSFTrace {
-  required int64 trace_id = 1;
-  required int64 id = 2;
-  required int64 duration = 3;
-  optional int64 parent_id = 4;
+message Trace {
+  int64 trace_id = 1;
+  int64 id = 2;
+  int64 duration = 3;
+  int64 parent_id = 4;
 }
 
-message SSFSample {
+message Sample {
   enum Metric {
       COUNTER = 0;
       GAUGE = 1;
@@ -48,16 +48,16 @@ message SSFSample {
       CRITICAL = 2;
       UNKNOWN = 3;
   }
-  optional Metric metric = 1 [default = COUNTER];
-  required string name = 2;
-  required int64 timestamp = 2;
-  optional string message = 3;
-  optional Status status = 4 [default = OK];
-  optional double value = 5;
-  optional float sample_rate = 6 [default = 1.0];
-  repeated SSFTag tags = 7;
-  optional string unit = 8;
-  optional SSFTrace trace = 9;
+  Metric metric = 1 [default = COUNTER];
+  string name = 2;
+  int64 timestamp = 2;
+  string message = 3;
+  Status status = 4 [default = OK];
+  double value = 5;
+  float sample_rate = 6 [default = 1.0];
+  Tag tags = 7;
+  string unit = 8;
+  Trace trace = 9;
 }
 ```
 
